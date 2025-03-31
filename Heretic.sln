@@ -7,6 +7,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "src\Utilities\Utilities.csproj", "{91B0DBB8-7B3B-07B8-461F-A92E6550C40F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{F1C8A469-FB5F-4533-91B0-E2FD61298A11}"
+	ProjectSection(SolutionItems) = preProject
+		docs\LICENSE = docs\LICENSE
+		docs\README.md = docs\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{56277C25-86B3-43FF-9F93-491E782EC315}"
 EndProject
