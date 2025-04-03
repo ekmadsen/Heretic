@@ -1,5 +1,6 @@
 ﻿namespace ErikTheCoder.Utilities;
 
+
 public class ListDiff<T>
 {
     public HashSet<T> Added { get; } = [];

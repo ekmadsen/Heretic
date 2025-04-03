@@ -9,6 +9,9 @@ public static class CollectionExtensions
     public static bool IsNullOrEmpty<T>(this List<T> list) => (list == null) || (list.Count == 0);
 
 
+    public static bool IsNullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) => (dictionary == null) || (dictionary.Count == 0);
+
+
     public static void Shuffle<T>(this List<T> items, IThreadsafeRandom random)
     {
         // Use the Fischer-Yates algorithm.
