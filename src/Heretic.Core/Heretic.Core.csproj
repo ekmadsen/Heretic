@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <RootNamespace>ErikTheCoder.Heretic.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Heretic.Data\Heretic.Data.csproj" />
+    <ProjectReference Include="..\ObjectMapper\ObjectMapper.csproj" />
+  </ItemGroup>
+
+</Project>

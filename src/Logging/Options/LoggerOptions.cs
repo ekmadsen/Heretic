@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 
 
-namespace ErikTheCoder.Logging.Settings;
+namespace ErikTheCoder.Logging.Options;
 
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
-public record LoggerSettings
+public record LoggerOptions
 {
     public string Application { get; set; }
     public string Component { get; set; }

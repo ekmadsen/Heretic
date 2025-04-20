@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
-using ErikTheCoder.Logging.Settings;
+using ErikTheCoder.Logging.Options;
+using ErikTheCoder.Utilities.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -9,15 +10,15 @@ namespace ErikTheCoder.Logging;
 
 public abstract class ConcurrentLoggerBase : ILogger, IDisposable
 {
-    private LoggerSettings _settings;
+    private LoggerOptions _options;
     private ConcurrentQueue<LogData> _queue; // Thread-safe.
     private Timer _timer;
     private bool _disposed;
 
 
-    protected ConcurrentLoggerBase(IOptions<LoggerSettings> settings)
+    protected ConcurrentLoggerBase(IOptions<LoggerOptions> options)
     {
-        _settings = settings.Value;
+        _options = options.Value;
 
         // Create queue to hold log data.
         // This enables zero-latency logging by deferring I/O cost of writing logs to data store.
@@ -25,7 +26,7 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
 
         // Create timer that drains queue on an interval, writing logs to data store.
         // Timer calls method on a ThreadPool thread.
-        _timer = new Timer(WriteLogs, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(settings.Value.QueueIntervalMs));
+        _timer = new Timer(WriteLogs, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(options.Value.QueueIntervalMs));
     }
 
 
@@ -46,13 +47,13 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
         // Wait for queue to drain.
         while (!_queue.IsEmpty)
         {
-            Thread.Sleep(TimeSpan.FromMilliseconds(_settings.QueueIntervalMs));
+            Thread.Sleep(TimeSpan.FromMilliseconds(_options.QueueIntervalMs));
         }
 
         if (disposing)
         {
             // Free managed resources.
-            _settings = null;
+            _options = null;
             _queue = null;
         }
 
@@ -64,10 +65,10 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
     }
 
 
-    public IDisposable BeginScope<TState>(TState state) where TState : notnull => null; // Not supported.
+    public bool IsEnabled(LogLevel logLevel) => logLevel >= _options.LogLevel;
 
 
-    public bool IsEnabled(LogLevel logLevel) => logLevel >= _settings.LogLevel;
+    public virtual IDisposable BeginScope<TState>(TState state) where TState : notnull => null; // Must be implemented by decorator.
 
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter) =>
@@ -84,21 +85,42 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
     }
 
 
-    private LogData GetLogData<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter, string category) => new()
+    private LogData GetLogData<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter, string category)
     {
-        Timestamp = DateTimeOffset.Now,
-        Application = _settings.Application,
-        Component = _settings.Component,
-        Class = category,
-        LogLevel = logLevel,
-        EventId = eventId,
-        Message = formatter(state, exception),
-        Properties = state is IEnumerable<KeyValuePair<string, object>> properties ? properties.ToDictionary() : []
-    };
+        // Create a DTO to hold log data.
+        // This is critical because the lifetime of the state parameter is not guaranteed to exceed the interval from client calling ILogger.Log and this code
+        //   actually writing the log to a data store.
+        //  Microsoft documentation states:
+        //   "If your implementation strives to queue logging messages in a non-blocking manner [Erik: as we're doing here via an in-memory queue],
+        //   the messages should first be materialized or the object state that's used to materialize a log entry should be serialized.
+        //   Doing so avoids potential exceptions from disposed objects."
+        // See https://learn.microsoft.com/en-us/dotnet/core/extensions/logging-providers#logging-provider-design-considerations.
+
+        var data = new LogData
+        {
+            Timestamp = DateTimeOffset.Now,
+            Application = _options.Application,
+            Component = _options.Component,
+            Class = category,
+            LogLevel = logLevel,
+            EventId = eventId,
+            Message = formatter(state, exception),
+            Properties = state is IEnumerable<KeyValuePair<string, object>> properties ? properties.ToDictionary() : []
+        };
+
+        // Attempt to set log correlation ID from a well-known property.
+        if (!data.Properties.TryGetValue(PropertyName.CorrelationId, out var propertyValue)) return data;
+
+        var correlationId = propertyValue?.ToString();
+        data.CorrelationId = correlationId.IsNullOrWhiteSpace() ? Guid.Empty : Guid.Parse(correlationId);
+
+        return data;
+    }
 
 
     // Usually async void is an anti-pattern.
-    // However, it's appropriate for event handlers.  See https://learn.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming.
+    // However, it's appropriate for event handlers.
+    // See https://learn.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming.
     // ReSharper disable once AsyncVoidMethod
     private async void WriteLogs(object state)
     {
@@ -111,15 +133,29 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
             while (_queue?.TryDequeue(out var data) ?? false)
             {
                 if (data == null) continue;
-                await WriteLogToDataStore(data);
+                try
+                {
+                    await WriteLogToDataStore(data);
+                }
+                catch
+                {
+                    // Ignore exception.
+                }
             }
         }
         finally
         {
-            await FlushLogsToDataStore();
+            try
+            {
+                await FlushLogsToDataStore();
+            }
+            catch
+            {
+                // Ignore exception.
+            }
 
             // Enable timer to fire again.
-            _timer?.Change(_settings.QueueIntervalMs, _settings.QueueIntervalMs);
+            _timer?.Change(_options.QueueIntervalMs, _options.QueueIntervalMs);
         }
     }
 

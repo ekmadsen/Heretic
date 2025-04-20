@@ -1,11 +1,11 @@
-﻿using Heretic.Contracts.Internal;
+﻿using ErikTheCoder.Heretic.Contracts.Internal;
 
 
-namespace ErikTheCoder.Heretic.WebApi;
+namespace ErikTheCoder.Heretic.WebApi.Extensions;
 
 
 #pragma warning disable SYSLIB1015
-public static partial class LogMessages
+public static partial class LoggingExtensions
 {
     [LoggerMessage(EventId = Event.FooBarId, EventName = Event.FooBarName, Level = LogLevel.Information, Message = "Foo = {foo}.  Bar = {bar}.")]
     public static partial void FooBar(this ILogger logger, string foo, string bar);

@@ -14,6 +14,7 @@ public static partial class StringExtensions
     public static bool IsNullOrEmpty(this string text) => string.IsNullOrEmpty(text);
 
 
+    [ContractAnnotation("text: null => true")]
     public static bool IsNullOrWhiteSpace(this string text) => string.IsNullOrWhiteSpace(text);
 
     

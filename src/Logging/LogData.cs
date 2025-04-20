@@ -7,6 +7,7 @@ namespace ErikTheCoder.Logging;
 public record LogData
 {
     public DateTimeOffset Timestamp { get; init; }
+    public Guid CorrelationId { get; set; }
     public string Application { get; init; }
     public string Component { get; init; }
     public string Class { get; init; }

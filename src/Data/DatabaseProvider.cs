@@ -1,0 +1,18 @@
+﻿namespace ErikTheCoder.Data;
+
+
+public class DatabaseProvider : IDatabaseProvider
+{
+    private readonly Dictionary<string, IDatabase> _databases;
+
+
+    public DatabaseProvider(IEnumerable<IDatabase> databases)
+    {
+        _databases = new Dictionary<string, IDatabase>(StringComparer.OrdinalIgnoreCase);
+        foreach (var database in databases)
+            _databases.Add(database.Name, database);
+    }
+
+
+    public IDatabase Get(string name) => _databases.GetValueOrDefault(name);
+}

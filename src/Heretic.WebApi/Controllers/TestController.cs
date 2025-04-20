@@ -1,3 +1,6 @@
+using ErikTheCoder.Heretic.Contracts.Dtos;
+using ErikTheCoder.Heretic.Contracts.Internal.Services;
+using ErikTheCoder.Heretic.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -6,7 +9,7 @@ namespace ErikTheCoder.Heretic.WebApi.Controllers;
 
 [ApiController]
 [Route("test")]
-public class TestController(ILogger<TestController> logger) : ControllerBase
+public class TestController(ILogger<TestController> logger, IUserService userService) : ControllerBase
 {
     [HttpGet]
     [Route("foobar")]
@@ -22,4 +25,14 @@ public class TestController(ILogger<TestController> logger) : ControllerBase
 
         return await Task.FromResult("foobar");
     }
+
+
+    [HttpGet]
+    [Route("hereticusers")]
+    public IAsyncEnumerable<User> GetHereticUsers() => userService.GetHereticUsers();
+
+
+    [HttpGet]
+    [Route("testusers")]
+    public IAsyncEnumerable<User> GetTestUsers() => userService.GetTestUsers();
 }

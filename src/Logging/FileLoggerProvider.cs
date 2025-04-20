@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using ErikTheCoder.Logging.Settings;
+﻿using ErikTheCoder.Logging.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -7,10 +6,9 @@ using Microsoft.Extensions.Options;
 namespace ErikTheCoder.Logging;
 
 
-public sealed class FileLoggerProvider(IOptions<FileLoggerSettings> settings) : ILoggerProvider
+public sealed class FileLoggerProvider(IOptions<FileLoggerOptions> options) : ILoggerProvider
 {
-    private FileLogger _fileLogger = new(settings);
-    private ConcurrentDictionary<string, FileLoggerWithCategory> _categorizedFileLoggers = [];
+    private FileLogger _fileLogger = new(options);
     private bool _disposed;
 
 
@@ -31,7 +29,6 @@ public sealed class FileLoggerProvider(IOptions<FileLoggerSettings> settings) : 
         if (disposing)
         {
             // Free managed resources.
-            _categorizedFileLoggers = null;
         }
 
         // Free unmanaged resources.
@@ -41,8 +38,7 @@ public sealed class FileLoggerProvider(IOptions<FileLoggerSettings> settings) : 
         _disposed = true;
     }
 
-    // Create one FileLoggerWithCategory instance per category.
-    // Inject the singleton FileLogger instance into each FileLoggerWithCategory instance.
+    // Inject singleton FileLogger instance into each FileLoggerDecorator instance.
     // The .NET runtime sets category = T when an ILogger<T> instance writes log messages.
-    public ILogger CreateLogger(string categoryName) => _categorizedFileLoggers.GetOrAdd(categoryName, category => new FileLoggerWithCategory(_fileLogger, category));
+    public ILogger CreateLogger(string categoryName) => new FileLoggerDecorator(_fileLogger, categoryName);
 }

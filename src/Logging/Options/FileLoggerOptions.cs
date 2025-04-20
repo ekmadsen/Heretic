@@ -1,11 +1,11 @@
-﻿namespace ErikTheCoder.Logging.Settings;
+﻿namespace ErikTheCoder.Logging.Options;
 
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
-public record FileLoggerSettings : LoggerSettings
+public record FileLoggerOptions : LoggerOptions
 {
     public string Filename { get; set; }
     public bool OverwriteFile { get; set; }
-    public FileLoggerColumnSettings Columns { get; set; } = new();
+    public FileLoggerColumnOptions Columns { get; set; } = new();
     public bool IncludeProperties { get; set; }
 }
