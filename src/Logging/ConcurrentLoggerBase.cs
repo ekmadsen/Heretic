@@ -139,7 +139,7 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
                 }
                 catch
                 {
-                    // Ignore exception.
+                    // Ignore exception.  Move on to next log message.
                 }
             }
         }

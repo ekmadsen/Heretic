@@ -35,16 +35,10 @@ public class LoggedDbConnection(ILogger<DbConnection> logger, IServiceProvider s
         logger.OpenDatabase(connection.DataSource ?? string.Empty, connection.Database);
         connection.Open();
     }
-    
-    
-    protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
-    {
-        // TODO: Log beginning transaction.
-        return connection.BeginTransaction(isolationLevel);
-    }
 
 
-    protected override DbCommand CreateDbCommand() =>new LoggedDbCommand(serviceProvider.GetService<ILogger<LoggedDbCommand>>(), connection.CreateCommand());
+    protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel) => new LoggedDbTransaction(serviceProvider.GetService<ILogger<LoggedDbTransaction>>(), connection.BeginTransaction());
+    protected override DbCommand CreateDbCommand() => new LoggedDbCommand(serviceProvider.GetService<ILogger<LoggedDbCommand>>(), connection.CreateCommand());
 
 
     public override void Close()

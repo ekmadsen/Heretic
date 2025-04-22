@@ -21,6 +21,10 @@ public static class Event
     public const string ExecuteDataReaderName = "ExecuteDataReader";
     public const int OpenDatabaseId = 1005;
     public const string OpenDatabaseName = "OpenDatabase";
+    public const int CommitTransactionId = 1006;
+    public const string CommitTransactionName = "CommitTransaction";
+    public const int RollbackTransactionId = 1007;
+    public const string RollbackTransactionName = "RollbackTransaction";
 
 
     public const int FooBarId = 9001;

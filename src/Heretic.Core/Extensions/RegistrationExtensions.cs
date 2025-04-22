@@ -1,6 +1,5 @@
 ﻿using ErikTheCoder.Heretic.Contracts.Internal.Services;
 using ErikTheCoder.Heretic.Core.Services;
-using ErikTheCoder.ObjectMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -12,7 +11,7 @@ public static class RegistrationExtensions
     public static IServiceCollection AddCoreServices(this IServiceCollection services)
     {
         services
-            .AddSingleton<IObjectMapper, Services.ObjectMapper>()
+            .AddSingleton<IObjectMapper, ObjectMapper>()
             .AddSingleton<IUserService, UserService>();
 
         return services;

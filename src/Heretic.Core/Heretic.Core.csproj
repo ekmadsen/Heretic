@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Riok.Mapperly" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Heretic.Data\Heretic.Data.csproj" />
-    <ProjectReference Include="..\ObjectMapper\ObjectMapper.csproj" />
   </ItemGroup>
 
 </Project>

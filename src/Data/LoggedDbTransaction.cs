@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using ErikTheCoder.Data.Extensions;
 using Microsoft.Extensions.Logging;
 
 
@@ -14,14 +15,14 @@ public class LoggedDbTransaction(ILogger<DbTransaction> logger, DbTransaction tr
 
     public override void Commit()
     {
-        // TODO: Log committing transaction.
+        logger.CommitTransaction();
         transaction.Commit();
     }
 
 
     public override void Rollback()
     {
-        // TODO: Log rolling back transaction.
+        logger.RollbackTransaction();
         transaction.Rollback();
     }
 }
