@@ -1,7 +1,6 @@
 using ErikTheCoder.Heretic.Core.Extensions;
 using ErikTheCoder.Heretic.Data.Extensions;
-using ErikTheCoder.Heretic.WebApi.Extensions;
-using ErikTheCoder.Logging;
+using ErikTheCoder.Logging.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,10 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging
     .ClearProviders()
     .AddDebug()
-    .AddFile();
+    .AddFile(options => builder.Configuration.GetSection("Logger").Bind(options))
+    .AddDatabase(options =>
+    {
+        builder.Configuration.GetSection("Logger").Bind(options);
+        options.Connection = builder.Configuration.GetConnectionString("ApplicationLogsDatabase");
+    });
 
 builder.Services
-    .AddHereticOptions(builder.Configuration)
     .AddDatabases(builder.Configuration)
     .AddCoreServices()
     .AddSwaggerGen()

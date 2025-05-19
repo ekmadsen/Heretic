@@ -1,4 +1,5 @@
 using ErikTheCoder.Heretic.Contracts.Dtos;
+using ErikTheCoder.Heretic.Contracts.Dtos.Requests;
 using ErikTheCoder.Heretic.Contracts.Internal.Services;
 using ErikTheCoder.Heretic.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +29,11 @@ public class TestController(ILogger<TestController> logger, IUserService userSer
 
 
     [HttpGet]
-    [Route("hereticusers")]
-    public IAsyncEnumerable<User> GetHereticUsers() => userService.GetHereticUsers();
+    [Route("users")]
+    public IAsyncEnumerable<User> GetUsers() => userService.GetUsers();
 
 
     [HttpGet]
-    [Route("testusers")]
-    public IAsyncEnumerable<User> GetTestUsers() => userService.GetTestUsers();
+    [Route("users/{Id:int}")]
+    public async Task<User> GetUser(GetUserRequest request) => await userService.GetUser(request);
 }

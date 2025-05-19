@@ -1,4 +1,5 @@
-﻿using ErikTheCoder.Logging.Options;
+﻿using ErikTheCoder.Logging.Contracts;
+using ErikTheCoder.Logging.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -6,12 +7,12 @@ using Microsoft.Extensions.Options;
 namespace ErikTheCoder.Logging;
 
 
-public sealed class FileLoggerProvider(IOptions<FileLoggerOptions> options) : ILoggerProvider
+public sealed class DatabaseLoggerProviderProvider(IOptions<DatabaseLoggerOptions> options, IApplicationLogsRepository repository) : ILoggerProvider
 {
-    private FileLogger _logger = new(options);
+    private DatabaseLogger _logger = new(options, repository);
 
 
-    ~FileLoggerProvider() => Dispose(false);
+    ~DatabaseLoggerProviderProvider() => Dispose(false);
 
 
     public void Dispose()
@@ -33,7 +34,7 @@ public sealed class FileLoggerProvider(IOptions<FileLoggerOptions> options) : IL
         _logger = null;
     }
 
-    // Inject singleton FileLogger instance into each FileLoggerDecorator instance.
+    // Inject singleton DatabaseLogger instance into each DatabaseLoggerDecorator instance.
     // The .NET runtime sets category = T when an ILogger<T> instance writes log messages.
-    public ILogger CreateLogger(string categoryName) => new FileLoggerDecorator(_logger, categoryName);
+    public ILogger CreateLogger(string categoryName) => new DatabaseLoggerDecorator(_logger, categoryName);
 }

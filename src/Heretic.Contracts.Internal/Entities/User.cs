@@ -5,6 +5,7 @@ namespace ErikTheCoder.Heretic.Contracts.Internal.Entities;
 
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 [UsedImplicitly]
 public record User
 {

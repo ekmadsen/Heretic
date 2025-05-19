@@ -10,6 +10,6 @@ public record FileLoggerColumnOptions
     public int ApplicationWidth { get; set; } = 20;
     public int ComponentWidth { get; set; } = 20;
     public int LevelWidth { get; set; } = 11;
-    public int ClassWidth { get; set; } = 100;
-    public int EventNameWidth { get; set; } = 40;
+    public int CategoryWidth { get; set; } = 100;
+    public int EventNameWidth { get; set; } = 50;
 }

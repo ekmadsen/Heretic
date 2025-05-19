@@ -12,6 +12,13 @@ public static class CollectionExtensions
     public static bool IsNullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) => (dictionary == null) || (dictionary.Count == 0);
 
 
+    public static async IAsyncEnumerable<TDestination> EnumerateAndMap<TSource, TDestination>(this IAsyncEnumerable<TSource> items, Func<TSource, TDestination> map)
+    {
+        await foreach (var item in items)
+            yield return map(item);
+    }
+
+
     public static void Shuffle<T>(this List<T> items, IThreadsafeRandom random)
     {
         // Use the Fischer-Yates algorithm.
@@ -28,6 +35,7 @@ public static class CollectionExtensions
     public static ListDiff<TId> CalculateDiff<T, TId>(this List<T> originalList, List<T> updatedList, Func<T, TId> getId) => CalculateDiff(originalList, updatedList, getId, getId);
 
 
+    // ReSharper disable once MemberCanBePrivate.Global
     public static ListDiff<TId> CalculateDiff<TOriginal, TUpdated, TId>(this List<TOriginal> originalList, List<TUpdated> updatedList, Func<TOriginal, TId> getOriginalId, Func<TUpdated, TId> getUpdatedId)
     {
         var diff = new ListDiff<TId>();

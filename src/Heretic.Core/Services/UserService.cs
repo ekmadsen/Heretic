@@ -1,6 +1,7 @@
-﻿using ErikTheCoder.Heretic.Contracts.Internal.Repositories;
+﻿using ErikTheCoder.Heretic.Contracts.Dtos;
+using ErikTheCoder.Heretic.Contracts.Dtos.Requests;
+using ErikTheCoder.Heretic.Contracts.Internal.Repositories;
 using ErikTheCoder.Heretic.Contracts.Internal.Services;
-using Dtos = ErikTheCoder.Heretic.Contracts.Dtos;
 
 
 namespace ErikTheCoder.Heretic.Core.Services;
@@ -8,16 +9,16 @@ namespace ErikTheCoder.Heretic.Core.Services;
 
 public class UserService(IUserRepository repository, IObjectMapper objectMapper) : IUserService
 {
-    public IAsyncEnumerable<Dtos.User> GetHereticUsers()
+    public IAsyncEnumerable<User> GetUsers()
     {
-        var hereticEntities = repository.GetHereticUsers();
-        return objectMapper.ToDtos(hereticEntities);
+        var userEntities = repository.GetUsers();
+        return objectMapper.ToDtos(userEntities);
     }
 
 
-    public IAsyncEnumerable<Dtos.User> GetTestUsers()
+    public async Task<User> GetUser(GetUserRequest request)
     {
-        var hereticEntities = repository.GetTestUsers();
-        return objectMapper.ToDtos(hereticEntities);
+        var userEntity = await repository.GetUser(request);
+        return objectMapper.ToDto(userEntity);
     }
 }

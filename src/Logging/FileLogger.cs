@@ -12,7 +12,6 @@ public class FileLogger : ConcurrentLoggerBase
     private FileStream _fileStream;
     private StreamWriter _streamWriter;
     private bool _haveWrittenHeader;
-    private bool _disposed;
 
 
     public FileLogger(IOptions<FileLoggerOptions> options) : base(options)
@@ -25,30 +24,39 @@ public class FileLogger : ConcurrentLoggerBase
     }
 
 
-    ~FileLogger() => Dispose(false);
+    ~FileLogger() => DisposeInternal();
 
 
-    protected override void Dispose(bool disposing)
+    protected override void DisposeInternal()
     {
-        if (_disposed) return;
-
-        if (disposing)
-        {
-            // Free managed resources.
-            _options = null;
-        }
-
         // Free unmanaged resources.
         _streamWriter?.Dispose();
         _streamWriter = null;
         _fileStream?.Dispose();
         _fileStream = null;
 
-        base.Dispose(disposing);
-        _disposed = true;
+        // Free managed resources.
+        _options = null;
+
+        base.DisposeInternal();
     }
 
 
+    protected override async ValueTask DisposeInternalAsync()
+    {
+        // Free unmanaged resources.
+        if (_streamWriter != null) await _streamWriter.DisposeAsync();
+        _streamWriter = null;
+        if (_fileStream != null) await _fileStream.DisposeAsync();
+        _fileStream = null;
+
+        // Free managed resources.
+        _options = null;
+
+        await base.DisposeInternalAsync();
+    }
+    
+    
     protected override async Task WriteLogToDataStore(LogData data)
     {
         if (_streamWriter == null) return;
@@ -56,17 +64,17 @@ public class FileLogger : ConcurrentLoggerBase
         if (!_haveWrittenHeader)
         {
             // Write file header.
-            await _streamWriter.WriteLineAsync($"{"Timestamp".PadRight(_options.Columns.TimestampWidth)}  {"Correlation ID".PadRight(_options.Columns.CorrelationIdWidth)}  {"Application".PadRight(_options.Columns.ApplicationWidth)}  {"Component".PadRight(_options.Columns.ComponentWidth)}  {"Class".PadRight(_options.Columns.ClassWidth)}  {"Level".PadRight(_options.Columns.LevelWidth)}  Event ID  {"Event Name".PadRight(_options.Columns.EventNameWidth)}  Message");
-            await _streamWriter.WriteLineAsync($"{new string('=', _options.Columns.TimestampWidth)}  {new string('=', _options.Columns.CorrelationIdWidth)}  {new string('=', _options.Columns.ApplicationWidth)}  {new string('=', _options.Columns.ComponentWidth)}  {new string('=', _options.Columns.ClassWidth)}  {new string('=', _options.Columns.LevelWidth)}  ========  {new string('=', _options.Columns.EventNameWidth)}  =======");
+            await _streamWriter.WriteLineAsync($"{"Timestamp".PadRight(_options.Columns.TimestampWidth)}  {"Correlation ID".PadRight(_options.Columns.CorrelationIdWidth)}  {"Application".PadRight(_options.Columns.ApplicationWidth)}  {"Component".PadRight(_options.Columns.ComponentWidth)}  {"Category".PadRight(_options.Columns.CategoryWidth)}  {"Level".PadRight(_options.Columns.LevelWidth)}  Event ID  {"Event Name".PadRight(_options.Columns.EventNameWidth)}  Message");
+            await _streamWriter.WriteLineAsync($"{new string('=', _options.Columns.TimestampWidth)}  {new string('=', _options.Columns.CorrelationIdWidth)}  {new string('=', _options.Columns.ApplicationWidth)}  {new string('=', _options.Columns.ComponentWidth)}  {new string('=', _options.Columns.CategoryWidth)}  {new string('=', _options.Columns.LevelWidth)}  ========  {new string('=', _options.Columns.EventNameWidth)}  =======");
             _haveWrittenHeader = true;
         }
 
         // Write log message.
-        await _streamWriter.WriteLineAsync($"{data.Timestamp.ToString(_options.Columns.TimestampFormat)}  {data.CorrelationId}  {(data.Application ?? "").PadRight(_options.Columns.ApplicationWidth)}  {(data.Component ?? "").PadRight(_options.Columns.ComponentWidth)}  {(data.Class ?? "").PadRight(_options.Columns.ClassWidth)}  {data.LogLevel.ToString().PadRight(_options.Columns.LevelWidth)}  {data.EventId.Id:00000000}  {(data.EventId.Name ?? "").PadRight(_options.Columns.EventNameWidth)}  {data.Message}");
+        await _streamWriter.WriteLineAsync($"{data.Timestamp.ToString(_options.Columns.TimestampFormat)}  {(data.CorrelationId?.ToString() ?? "").PadRight(_options.Columns.CorrelationIdWidth)}  {(data.Application ?? "").PadRight(_options.Columns.ApplicationWidth)}  {(data.Component ?? "").PadRight(_options.Columns.ComponentWidth)}  {(data.Category ?? "").PadRight(_options.Columns.CategoryWidth)}  {data.LogLevel.ToString().PadRight(_options.Columns.LevelWidth)}  {data.EventId.Id:00000000}  {(data.EventId.Name ?? "").PadRight(_options.Columns.EventNameWidth)}  {data.Message}");
         if (!_options.IncludeProperties || data.Properties.IsNullOrEmpty()) return;
 
         // Write log properties.
-        await _streamWriter.WriteAsync(new string(' ', _options.Columns.TimestampWidth + _options.Columns.CorrelationIdWidth + _options.Columns.ApplicationWidth + _options.Columns.ComponentWidth + _options.Columns.ClassWidth + _options.Columns.LevelWidth + _options.Columns.EventNameWidth + 24));
+        await _streamWriter.WriteAsync(new string(' ', _options.Columns.TimestampWidth + _options.Columns.CorrelationIdWidth + _options.Columns.ApplicationWidth + _options.Columns.ComponentWidth + _options.Columns.CategoryWidth + _options.Columns.LevelWidth + _options.Columns.EventNameWidth + 24));
         await _streamWriter.WriteAsync('[');
 
         var index = 0;

@@ -8,12 +8,11 @@ using Microsoft.Extensions.Options;
 namespace ErikTheCoder.Logging;
 
 
-public abstract class ConcurrentLoggerBase : ILogger, IDisposable
+public abstract class ConcurrentLoggerBase : ILogger, IDisposable, IAsyncDisposable
 {
     private LoggerOptions _options;
     private ConcurrentQueue<LogData> _queue; // Thread-safe.
     private Timer _timer;
-    private bool _disposed;
 
 
     protected ConcurrentLoggerBase(IOptions<LoggerOptions> options)
@@ -30,41 +29,59 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
     }
 
 
-    ~ConcurrentLoggerBase() => Dispose(false);
+    ~ConcurrentLoggerBase() => Dispose();
 
 
     public void Dispose()
     {
-        Dispose(true);
+        DisposeInternal();
         GC.SuppressFinalize(this);
     }
 
 
-    protected virtual void Dispose(bool disposing)
+    protected virtual void DisposeInternal()
     {
-        if (_disposed) return;
-
         // Wait for queue to drain.
-        while (!_queue.IsEmpty)
+        while (_queue is { IsEmpty: false })
         {
-            Thread.Sleep(TimeSpan.FromMilliseconds(_options.QueueIntervalMs));
-        }
-
-        if (disposing)
-        {
-            // Free managed resources.
-            _options = null;
-            _queue = null;
+            Thread.Sleep(TimeSpan.FromMilliseconds(_options?.QueueIntervalMs ?? 0));
         }
 
         // Free unmanaged resources.
         _timer?.Dispose();
         _timer = null;
 
-        _disposed = true;
+        // Free managed resources.
+        _options = null;
+        _queue = null;
     }
 
 
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeInternalAsync();
+        GC.SuppressFinalize(this);
+    }
+
+
+    protected virtual async ValueTask DisposeInternalAsync()
+    {
+        // Wait for queue to drain.
+        while (_queue is { IsEmpty: false })
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(_options?.QueueIntervalMs ?? 0));
+        }
+        
+        // Free unmanaged resources.
+        if (_timer != null) await _timer.DisposeAsync();
+        _timer = null;
+
+        // Free managed resources.
+        _options = null;
+        _queue = null;
+    }
+    
+    
     public bool IsEnabled(LogLevel logLevel) => logLevel >= _options.LogLevel;
 
 
@@ -101,18 +118,20 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
             Timestamp = DateTimeOffset.Now,
             Application = _options.Application,
             Component = _options.Component,
-            Class = category,
+            Category = category,
             LogLevel = logLevel,
             EventId = eventId,
             Message = formatter(state, exception),
             Properties = state is IEnumerable<KeyValuePair<string, object>> properties ? properties.ToDictionary() : []
         };
 
-        // Attempt to set log correlation ID from a well-known property.
-        if (!data.Properties.TryGetValue(PropertyName.CorrelationId, out var propertyValue)) return data;
-
-        var correlationId = propertyValue?.ToString();
-        data.CorrelationId = correlationId.IsNullOrWhiteSpace() ? Guid.Empty : Guid.Parse(correlationId);
+        if (data.Properties.TryGetValue(_options.CorrelationIdPropertyName, out var propertyValue))
+        {
+            // Attempt to set log correlation ID from a well-known property.
+            var correlationId = propertyValue?.ToString();
+            data.CorrelationId = correlationId.IsNullOrWhiteSpace() ? null : Guid.Parse(correlationId);
+            data.Properties.Remove(_options.CorrelationIdPropertyName);
+        }
 
         return data;
     }
@@ -161,5 +180,5 @@ public abstract class ConcurrentLoggerBase : ILogger, IDisposable
 
 
     protected abstract Task WriteLogToDataStore(LogData data);
-    protected abstract Task FlushLogsToDataStore();
+    protected virtual async Task FlushLogsToDataStore() => await Task.CompletedTask;
 }

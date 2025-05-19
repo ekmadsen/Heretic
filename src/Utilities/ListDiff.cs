@@ -1,6 +1,7 @@
 ﻿namespace ErikTheCoder.Utilities;
 
 
+// ReSharper disable CollectionNeverQueried.Global
 public class ListDiff<T>
 {
     public HashSet<T> Added { get; } = [];

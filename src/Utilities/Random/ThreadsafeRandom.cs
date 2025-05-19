@@ -24,13 +24,24 @@ public sealed class ThreadsafeRandom : IThreadsafeRandom
     }
 
 
+    ~ThreadsafeRandom() => Dispose();
+
+
     public void Dispose()
     {
-        lock (_lock)
+        // Free unmanaged resources.
+
+        // Free managed resources.
+        if (_lock != null)
         {
-            _random = null;
+            lock (_lock)
+            {
+                _random = null;
+            }
+            _lock = null;
         }
-        _lock = null;
+
+        GC.SuppressFinalize(this);
     }
 
 

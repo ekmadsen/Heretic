@@ -10,14 +10,25 @@ public sealed class ThreadsafeCryptoRandom : IThreadsafeRandom
     private Lock _lock = new();
 
 
+    ~ThreadsafeCryptoRandom() => Dispose();
+
+
     public void Dispose()
     {
-        lock (_lock)
+        // Free unmanaged resources.
+
+        // Free managed resources.
+        if (_lock != null)
         {
-            _random.Dispose();
-            _random = null;
+            lock (_lock)
+            {
+                _random?.Dispose();
+                _random = null;
+            }
+            _lock = null;
         }
-        _lock = null;
+
+        GC.SuppressFinalize(this);
     }
 
 

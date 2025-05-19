@@ -1,6 +1,7 @@
 ﻿namespace ErikTheCoder.Heretic.Contracts.Dtos;
 
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public record User
 {
     public int Id { get; set; }

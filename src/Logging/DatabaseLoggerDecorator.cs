@@ -4,7 +4,7 @@
 namespace ErikTheCoder.Logging;
 
 
-public class FileLoggerDecorator(FileLogger logger, string category) : ILogger
+public class DatabaseLoggerDecorator(DatabaseLogger logger, string category) : ILogger
 {
     public bool IsEnabled(LogLevel logLevel) => logger.IsEnabled(logLevel);
 

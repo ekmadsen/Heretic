@@ -3,6 +3,6 @@
 
 public interface IObjectMapper
 {
-    IAsyncEnumerable<Contracts.Dtos.User> ToDtos(IAsyncEnumerable<Entities.User> users);
-    Contracts.Dtos.User ToDto(Entities.User user);
+    IAsyncEnumerable<Dtos.User> ToDtos(IAsyncEnumerable<Entities.User> users);
+    Dtos.User ToDto(Entities.User user);
 }
