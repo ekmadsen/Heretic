@@ -62,7 +62,7 @@ public class ApplicationLogsRepository(IOptions<DatabaseLoggerOptions> options) 
         propertyValues ??= [];
         int messageId;
 
-        // Use a transaction to atomically insert message and associated transactions, or neither.
+        // Use a transaction to atomically insert message and associated property values, or neither.
         await using var connection = new SqlConnection(options.Value.Connection);
         await connection.OpenAsync();
         await using var transaction = await connection.BeginTransactionAsync();
