@@ -4,7 +4,7 @@ using ErikTheCoder.Data.Extensions;
 using Microsoft.Extensions.Logging;
 
 
-namespace ErikTheCoder.Data;
+namespace ErikTheCoder.Data.Services;
 
 
 public class LoggedDbTransaction(ILogger<DbTransaction> logger, DbTransaction transaction) : DbTransaction

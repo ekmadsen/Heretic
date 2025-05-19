@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using ErikTheCoder.Contracts.Internal.Services;
 using ErikTheCoder.Data.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 
-namespace ErikTheCoder.Data;
+namespace ErikTheCoder.Data.Services;
 
 
 public class SqlDatabase(IServiceProvider serviceProvider, IOptions<DatabaseOptions> options) : IDatabase

@@ -1,4 +1,5 @@
 ﻿using ErikTheCoder.Logging.Options;
+using ErikTheCoder.Logging.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -28,7 +29,7 @@ public static class RegistrationExtensions
 
     public static ILoggingBuilder AddDatabase(this ILoggingBuilder builder, Action<DatabaseLoggerOptions> configureOptions)
     {
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, DatabaseLoggerProviderProvider>());
+        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, DatabaseLoggerProvider>());
 
         var databaseLoggerOptions = new DatabaseLoggerOptions();
         configureOptions?.Invoke(databaseLoggerOptions);

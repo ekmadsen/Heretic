@@ -1,4 +1,7 @@
-﻿namespace ErikTheCoder.Utilities.Random;
+﻿using ErikTheCoder.Contracts.Services;
+
+
+namespace ErikTheCoder.Utilities.Random;
 
 
 public sealed class ThreadsafeRandom : IThreadsafeRandom

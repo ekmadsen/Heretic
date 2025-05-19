@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using ErikTheCoder.Data;
+using ErikTheCoder.Contracts.Internal.Services;
 using ErikTheCoder.Heretic.Contracts.Dtos.Requests;
 using ErikTheCoder.Heretic.Contracts.Internal;
 using ErikTheCoder.Heretic.Contracts.Internal.Entities;

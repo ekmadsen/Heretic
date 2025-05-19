@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 
-namespace ErikTheCoder.Logging;
+namespace ErikTheCoder.Logging.Services;
 
 
 public sealed class FileLoggerProvider(IOptions<FileLoggerOptions> options) : ILoggerProvider

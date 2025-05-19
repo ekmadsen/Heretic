@@ -1,4 +1,4 @@
-﻿using ErikTheCoder.Utilities.Random;
+﻿using ErikTheCoder.Contracts.Services;
 
 
 namespace ErikTheCoder.Utilities.Extensions;

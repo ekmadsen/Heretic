@@ -4,7 +4,7 @@ using ErikTheCoder.Data.Extensions;
 using Microsoft.Extensions.Logging;
 
 
-namespace ErikTheCoder.Data;
+namespace ErikTheCoder.Data.Services;
 
 public class LoggedDbCommand(ILogger<DbCommand> logger, DbCommand command) : DbCommand
 {

@@ -1,4 +1,4 @@
-﻿namespace ErikTheCoder.Logging.Entities;
+﻿namespace ErikTheCoder.Contracts.Internal.Entities;
 
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global

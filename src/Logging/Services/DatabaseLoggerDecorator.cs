@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 
 
-namespace ErikTheCoder.Logging;
+namespace ErikTheCoder.Logging.Services;
 
 
 public class DatabaseLoggerDecorator(DatabaseLogger logger, string category) : ILogger

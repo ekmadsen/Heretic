@@ -1,11 +1,12 @@
 ﻿using System.Collections.Concurrent;
+using ErikTheCoder.Contracts.Internal.Dtos;
 using ErikTheCoder.Logging.Options;
 using ErikTheCoder.Utilities.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 
-namespace ErikTheCoder.Logging;
+namespace ErikTheCoder.Logging.Services;
 
 
 public abstract class ConcurrentLoggerBase : ILogger, IDisposable, IAsyncDisposable

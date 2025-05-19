@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Dapper;
-using ErikTheCoder.Logging.Contracts;
-using ErikTheCoder.Logging.Entities;
+using ErikTheCoder.Contracts.Internal.Entities;
+using ErikTheCoder.Contracts.Internal.Repositories;
 using ErikTheCoder.Logging.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;

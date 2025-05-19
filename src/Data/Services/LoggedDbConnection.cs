@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 
-namespace ErikTheCoder.Data;
+namespace ErikTheCoder.Data.Services;
 
 
 public class LoggedDbConnection(ILogger<DbConnection> logger, IServiceProvider serviceProvider, DbConnection connection) : DbConnection

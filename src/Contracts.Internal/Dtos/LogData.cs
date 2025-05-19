@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 
 
-namespace ErikTheCoder.Logging;
+namespace ErikTheCoder.Contracts.Internal.Dtos;
 
 
 public record LogData

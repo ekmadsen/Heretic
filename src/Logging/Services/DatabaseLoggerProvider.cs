@@ -1,18 +1,18 @@
-﻿using ErikTheCoder.Logging.Contracts;
+﻿using ErikTheCoder.Contracts.Internal.Repositories;
 using ErikTheCoder.Logging.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 
-namespace ErikTheCoder.Logging;
+namespace ErikTheCoder.Logging.Services;
 
 
-public sealed class DatabaseLoggerProviderProvider(IOptions<DatabaseLoggerOptions> options, IApplicationLogsRepository repository) : ILoggerProvider
+public sealed class DatabaseLoggerProvider(IOptions<DatabaseLoggerOptions> options, IApplicationLogsRepository repository) : ILoggerProvider
 {
     private DatabaseLogger _logger = new(options, repository);
 
 
-    ~DatabaseLoggerProviderProvider() => Dispose(false);
+    ~DatabaseLoggerProvider() => Dispose(false);
 
 
     public void Dispose()

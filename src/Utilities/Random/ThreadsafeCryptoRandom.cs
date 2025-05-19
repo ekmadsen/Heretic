@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using ErikTheCoder.Contracts.Services;
 
 
 namespace ErikTheCoder.Utilities.Random;

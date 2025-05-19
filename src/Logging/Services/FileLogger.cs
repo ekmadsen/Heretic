@@ -1,9 +1,10 @@
-﻿using ErikTheCoder.Logging.Options;
+﻿using ErikTheCoder.Contracts.Internal.Dtos;
+using ErikTheCoder.Logging.Options;
 using ErikTheCoder.Utilities.Extensions;
 using Microsoft.Extensions.Options;
 
 
-namespace ErikTheCoder.Logging;
+namespace ErikTheCoder.Logging.Services;
 
 
 public class FileLogger : ConcurrentLoggerBase

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Contracts.Internal\Contracts.Internal.csproj" />
     <ProjectReference Include="..\Heretic.Contracts.Internal\Heretic.Contracts.Internal.csproj" />
     <ProjectReference Include="..\Logging\Logging.csproj" />
   </ItemGroup>

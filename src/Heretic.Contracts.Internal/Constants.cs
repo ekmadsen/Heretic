@@ -4,7 +4,6 @@
 public static class DatabaseName
 {
     public const string Heretic = "Heretic";
-    public const string Test = "Test";
 }
 
 

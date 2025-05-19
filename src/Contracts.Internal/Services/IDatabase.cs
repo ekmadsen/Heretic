@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 
 
-namespace ErikTheCoder.Data;
+namespace ErikTheCoder.Contracts.Internal.Services;
 
 
 public interface IDatabase

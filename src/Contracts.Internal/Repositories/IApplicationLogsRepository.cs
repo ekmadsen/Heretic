@@ -1,7 +1,7 @@
-﻿using ErikTheCoder.Logging.Entities;
+﻿using ErikTheCoder.Contracts.Internal.Entities;
 
 
-namespace ErikTheCoder.Logging.Contracts;
+namespace ErikTheCoder.Contracts.Internal.Repositories;
 
 
 public interface IApplicationLogsRepository

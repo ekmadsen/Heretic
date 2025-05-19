@@ -1,4 +1,4 @@
-﻿namespace ErikTheCoder.Data;
+﻿namespace ErikTheCoder.Contracts.Internal.Services;
 
 
 public interface IDatabaseProvider

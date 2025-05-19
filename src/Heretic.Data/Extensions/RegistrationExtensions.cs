@@ -1,10 +1,11 @@
-﻿using ErikTheCoder.Data;
+﻿using ErikTheCoder.Contracts.Internal.Repositories;
+using ErikTheCoder.Contracts.Internal.Services;
 using ErikTheCoder.Data.Extensions;
 using ErikTheCoder.Data.Options;
+using ErikTheCoder.Data.Services;
 using ErikTheCoder.Heretic.Contracts.Internal;
 using ErikTheCoder.Heretic.Contracts.Internal.Repositories;
 using ErikTheCoder.Heretic.Data.Repositories;
-using ErikTheCoder.Logging.Contracts;
 using ErikTheCoder.Logging.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,12 +25,6 @@ public static class RegistrationExtensions
             {
                 Name = DatabaseName.Heretic,
                 Connection = configuration.GetConnectionString($"{DatabaseName.Heretic}{_dbSuffix}"),
-                LogQueries = true
-            })
-            .AddSqlDatabase(new DatabaseOptions
-            {
-                Name = DatabaseName.Test,
-                Connection = configuration.GetConnectionString($"{DatabaseName.Test}{_dbSuffix}"),
                 LogQueries = true
             })
             .AddSingleton<IDatabaseProvider, DatabaseProvider>()

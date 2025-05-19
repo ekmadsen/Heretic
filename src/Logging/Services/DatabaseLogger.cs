@@ -1,11 +1,12 @@
-﻿using ErikTheCoder.Logging.Contracts;
-using ErikTheCoder.Logging.Entities;
+﻿using System.Collections.Concurrent;
+using ErikTheCoder.Contracts.Internal.Dtos;
+using ErikTheCoder.Contracts.Internal.Entities;
+using ErikTheCoder.Contracts.Internal.Repositories;
 using ErikTheCoder.Logging.Options;
 using Microsoft.Extensions.Options;
-using System.Collections.Concurrent;
 
 
-namespace ErikTheCoder.Logging;
+namespace ErikTheCoder.Logging.Services;
 
 
 public class DatabaseLogger(IOptions<DatabaseLoggerOptions> options, IApplicationLogsRepository repository) : ConcurrentLoggerBase(options)

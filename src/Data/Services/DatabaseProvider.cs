@@ -1,4 +1,7 @@
-﻿namespace ErikTheCoder.Data;
+﻿using ErikTheCoder.Contracts.Internal.Services;
+
+
+namespace ErikTheCoder.Data.Services;
 
 
 public class DatabaseProvider : IDatabaseProvider

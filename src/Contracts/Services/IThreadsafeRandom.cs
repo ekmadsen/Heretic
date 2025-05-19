@@ -1,4 +1,4 @@
-﻿namespace ErikTheCoder.Utilities.Random;
+﻿namespace ErikTheCoder.Contracts.Services;
 
 
 public interface IThreadsafeRandom : IDisposable
