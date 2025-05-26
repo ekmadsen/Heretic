@@ -1,7 +1,6 @@
 ﻿namespace ErikTheCoder.Logging.Options;
 
 
-// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 public record FileLoggerColumnOptions
 {
     public string TimestampFormat { get; set; } = "O";

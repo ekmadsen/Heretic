@@ -1,4 +1,4 @@
-﻿using ErikTheCoder.Contracts.Internal.Services;
+﻿using ErikTheCoder.Contracts.Services;
 using ErikTheCoder.Data.Options;
 using ErikTheCoder.Data.Services;
 using Microsoft.Extensions.DependencyInjection;

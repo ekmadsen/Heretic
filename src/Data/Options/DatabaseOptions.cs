@@ -1,7 +1,6 @@
 ﻿namespace ErikTheCoder.Data.Options;
 
 
-// ReSharper disable PropertyCanBeMadeInitOnly.Global
 public record DatabaseOptions
 {
     public string Name { get; set; }

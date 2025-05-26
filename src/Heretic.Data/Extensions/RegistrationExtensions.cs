@@ -1,11 +1,9 @@
 ﻿using ErikTheCoder.Contracts.Internal.Repositories;
-using ErikTheCoder.Contracts.Internal.Services;
+using ErikTheCoder.Contracts.Services;
 using ErikTheCoder.Data.Extensions;
 using ErikTheCoder.Data.Options;
 using ErikTheCoder.Data.Services;
 using ErikTheCoder.Heretic.Contracts.Internal;
-using ErikTheCoder.Heretic.Contracts.Internal.Repositories;
-using ErikTheCoder.Heretic.Data.Repositories;
 using ErikTheCoder.Logging.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +26,6 @@ public static class RegistrationExtensions
                 LogQueries = true
             })
             .AddSingleton<IDatabaseProvider, DatabaseProvider>()
-            .AddSingleton<IUserRepository, UserRepository>()
             .AddSingleton<IApplicationLogsRepository, ApplicationLogsRepository>();
 
         return services;

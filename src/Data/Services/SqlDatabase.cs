@@ -1,5 +1,5 @@
 ﻿using System.Data.Common;
-using ErikTheCoder.Contracts.Internal.Services;
+using ErikTheCoder.Contracts.Services;
 using ErikTheCoder.Data.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;

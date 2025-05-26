@@ -1,4 +1,4 @@
-﻿using ErikTheCoder.Contracts.Internal.Dtos;
+﻿using ErikTheCoder.Contracts.Dtos;
 using ErikTheCoder.Logging.Options;
 using ErikTheCoder.Utilities.Extensions;
 using Microsoft.Extensions.Options;

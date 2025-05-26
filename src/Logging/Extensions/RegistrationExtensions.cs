@@ -9,7 +9,6 @@ using OptionsFactory = Microsoft.Extensions.Options.Options;
 namespace ErikTheCoder.Logging.Extensions;
 
 
-// ReSharper disable UnusedMethodReturnValue.Global
 public static class RegistrationExtensions
 {
     public static ILoggingBuilder AddFile(this ILoggingBuilder builder, Action<FileLoggerOptions> configureOptions)

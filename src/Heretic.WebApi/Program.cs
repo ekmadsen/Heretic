@@ -1,5 +1,5 @@
-using ErikTheCoder.Heretic.Core.Extensions;
 using ErikTheCoder.Heretic.Data.Extensions;
+using ErikTheCoder.Identity.Extensions;
 using ErikTheCoder.Logging.Extensions;
 
 
@@ -17,7 +17,7 @@ builder.Logging
 
 builder.Services
     .AddDatabases(builder.Configuration)
-    .AddCoreServices()
+    .AddIdentity(options => builder.Configuration.GetSection("Identity").Bind(options))
     .AddSwaggerGen()
     .AddControllers();
 

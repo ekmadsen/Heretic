@@ -1,7 +1,3 @@
-using ErikTheCoder.Heretic.Contracts.Dtos;
-using ErikTheCoder.Heretic.Contracts.Dtos.Requests;
-using ErikTheCoder.Heretic.Contracts.Internal.Services;
-using ErikTheCoder.Heretic.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -10,30 +6,14 @@ namespace ErikTheCoder.Heretic.WebApi.Controllers;
 
 [ApiController]
 [Route("test")]
-public class TestController(ILogger<TestController> logger, IUserService userService) : ControllerBase
+public class TestController : ControllerBase
 {
     [HttpGet]
     [Route("foobar")]
-    public async Task<ActionResult<string>> FooBar()
+    public async Task FooBar()
     {
-        const string foo = "foo";
-        const string bar = "bar";
-        const string baz = "baz";
-        const string zap = "zap";
+        // Place test code here.
 
-        logger.FooBar(foo, bar);
-        logger.HelloWorld(baz, zap);
-
-        return await Task.FromResult("foobar");
+        await Task.CompletedTask;
     }
-
-
-    [HttpGet]
-    [Route("users")]
-    public IAsyncEnumerable<User> GetUsers() => userService.GetUsers();
-
-
-    [HttpGet]
-    [Route("users/{Id:int}")]
-    public async Task<User> GetUser(GetUserRequest request) => await userService.GetUser(request);
 }

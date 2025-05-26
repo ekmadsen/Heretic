@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using ErikTheCoder.Contracts.Internal.Dtos;
+using ErikTheCoder.Contracts.Dtos;
 using ErikTheCoder.Contracts.Internal.Entities;
 using ErikTheCoder.Contracts.Internal.Repositories;
 using ErikTheCoder.Logging.Options;

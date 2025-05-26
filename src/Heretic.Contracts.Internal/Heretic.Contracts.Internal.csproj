@@ -8,15 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Contracts.Internal\Contracts.Internal.csproj" />
     <ProjectReference Include="..\Heretic.Contracts\Heretic.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Dtos\" />
+    <Folder Include="Entities\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

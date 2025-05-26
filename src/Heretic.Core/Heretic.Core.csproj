@@ -15,4 +15,10 @@
     <ProjectReference Include="..\Heretic.Data\Heretic.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+    <Folder Include="ObjectMaps\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

@@ -1,9 +1,6 @@
 ﻿namespace ErikTheCoder.Logging.Options;
 
 
-// ReSharper disable PropertyCanBeMadeInitOnly.Global
-// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 public record FileLoggerOptions : LoggerOptions
 {
     public string Filename { get; set; }

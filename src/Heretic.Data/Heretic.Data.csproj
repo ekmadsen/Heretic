@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Heretic.Contracts.Internal\Heretic.Contracts.Internal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

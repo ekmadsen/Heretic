@@ -1,4 +1,4 @@
-﻿using ErikTheCoder.Contracts.Internal.Services;
+﻿using ErikTheCoder.Contracts.Services;
 
 
 namespace ErikTheCoder.Data.Services;

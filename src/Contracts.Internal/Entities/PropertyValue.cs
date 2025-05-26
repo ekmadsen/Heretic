@@ -1,7 +1,6 @@
 ﻿namespace ErikTheCoder.Contracts.Internal.Entities;
 
 
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 public record PropertyValue
 {
     public int Id { get; set; }
