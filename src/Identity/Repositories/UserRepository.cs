@@ -51,6 +51,35 @@ public class UserRepository(IOptions<IdentityOptions> options, IDatabaseProvider
     }
 
 
+    public IAsyncEnumerable<Claim> GetClaims(int userId)
+    {
+        var database = databaseProvider.Get(options.Value.DatabaseName);
+        using var connection = database.OpenConnection();
+
+        const string sql = """
+            select c.Name, cv.Value
+            from UserClaimStandardValues ucsv
+            inner join Users u on ucsv.UserId = u.Id
+            inner join ClaimValues cv on ucsv.ValueId = cv.Id
+            inner join Claims c on cv.ClaimId = c.Id
+            where u.Id = @userId
+            
+            union
+            
+            select c.Name, ucv.Value
+            from UserClaimValues ucv
+            inner join Users u on ucv.UserId = u.Id
+            inner join Claims c on ucv.ClaimId = c.Id
+            where u.Id = @userId
+            
+            order by Name, Value
+        """;
+
+        var parameter = new { userId };
+        return connection.QueryUnbufferedAsync<Claim>(sql, parameter);
+    }
+
+
     public async Task UpdateUser(User user)
     {
         var database = databaseProvider.Get(options.Value.DatabaseName);

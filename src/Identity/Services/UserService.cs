@@ -59,6 +59,40 @@ public class UserService(IOptions<IdentityOptions> options, IUserRepository repo
             };
         }
 
+        // Get user's claims.
+        var claims = new Dictionary<string, object>
+        {
+            {"sub", userEntity.Username},
+            {"firstName", userEntity.FirstName},
+            {"lastName", userEntity.LastName},
+            {"email", userEntity.Email}
+        };
+
+        var claimEntities = repository.GetClaims(userEntity.Id);
+        await foreach (var claimEntity in claimEntities)
+        {
+            if (claims.TryGetValue(claimEntity.Name, out var value))
+            {
+                // Claim name already present in dictionary.
+                if (value is string stringValue)
+                {
+                    // Elevate single value to a list of values.
+                    claims[claimEntity.Name] = new List<string>([stringValue, claimEntity.Value]);
+                }
+                else
+                {
+                    // Add value to list of values.
+                    ((List<string>)claims[claimEntity.Name]).Add(claimEntity.Value);
+                }
+            }
+            else
+            {
+                // Claim name not present in dictionary.
+                // Add single value.
+                claims[claimEntity.Name] = claimEntity.Value;
+            }
+        }
+
         // Create security key.
         var rsa = RSA.Create();
         var publicSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(options.Value.PublicSigningKey));
@@ -67,15 +101,7 @@ public class UserService(IOptions<IdentityOptions> options, IUserRepository repo
         var privateSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(options.Value.PrivateSigningKey));
         rsa.ImportRSAPrivateKey(privateSigningKey, out bytesRead);
         if (bytesRead != privateSigningKey.Length) throw new Exception("Failed to import RSA private key.");
-        var securityKey = new RsaSecurityKey(rsa){ KeyId = options.Value.KeyId.ToString() };
-
-        // Get user's claims.
-        // TODO: Get user's claims from database.
-        var claims = new Dictionary<string, object>
-        {
-            {"sub", request.Payload.Username},
-            {"scope", "api-all"}
-        };
+        var securityKey = new RsaSecurityKey(rsa) { KeyId = options.Value.KeyId.ToString() };
 
         // Create token descriptor.
         var now = DateTime.UtcNow;
