@@ -19,7 +19,8 @@ public static class RegistrationExtensions
 
     public static IServiceCollection AddDatabases(this IServiceCollection services, IConfigurationManager configuration)
     {
-        services.AddSqlDatabase(new DatabaseOptions
+        services
+            .AddSqlDatabase(new DatabaseOptions
             {
                 Name = DatabaseName.Heretic,
                 Connection = configuration.GetConnectionString($"{DatabaseName.Heretic}{_dbSuffix}"),

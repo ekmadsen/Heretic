@@ -15,7 +15,7 @@ public static class RegistrationExtensions
 {
     public static IServiceCollection AddIdentity(this IServiceCollection services, Action<IdentityOptions> configureOptions)
     {
-        if (configureOptions != null) services.AddOptions<IdentityOptions>().Configure(configureOptions);
+        services.AddOptions<IdentityOptions>().Configure(configureOptions);
 
         services
             .AddSingleton<IUserRepository, UserRepository>()

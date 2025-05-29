@@ -16,7 +16,7 @@ public static class RegistrationExtensions
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, FileLoggerProvider>());
 
         var fileLoggerOptions = new FileLoggerOptions();
-        configureOptions?.Invoke(fileLoggerOptions);
+        configureOptions(fileLoggerOptions);
         LoggerOptions loggerOptions = fileLoggerOptions;
 
         builder.Services.AddSingleton(OptionsFactory.Create(loggerOptions));
@@ -31,7 +31,7 @@ public static class RegistrationExtensions
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, DatabaseLoggerProvider>());
 
         var databaseLoggerOptions = new DatabaseLoggerOptions();
-        configureOptions?.Invoke(databaseLoggerOptions);
+        configureOptions(databaseLoggerOptions);
         LoggerOptions loggerOptions = databaseLoggerOptions;
 
         builder.Services.AddSingleton(OptionsFactory.Create(loggerOptions));

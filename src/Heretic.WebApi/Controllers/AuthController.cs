@@ -1,10 +1,12 @@
-﻿using ErikTheCoder.Contracts.Dtos;
+﻿using System.Security.Cryptography;
+using ErikTheCoder.Contracts.Dtos;
 using ErikTheCoder.Contracts.Dtos.Requests;
+using ErikTheCoder.Contracts.Internal;
 using ErikTheCoder.Contracts.Services;
 using ErikTheCoder.Identity.Options;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -17,6 +19,7 @@ public class AuthController(IOptions<IdentityOptions> options, IUserService user
 {
     [HttpGet]
     [Route("metadata")]
+    [AllowAnonymous]
     public async Task<AuthMetadata> GetMetadata()
     {
         // Export public signing key.
@@ -41,6 +44,7 @@ public class AuthController(IOptions<IdentityOptions> options, IUserService user
 
     [HttpPost]
     [Route("login")]
+    [AllowAnonymous]
     public async Task<ActionResult> Login(LoginRequest request)
     {
         var response = await userService.Login(request);
@@ -52,5 +56,10 @@ public class AuthController(IOptions<IdentityOptions> options, IUserService user
 
     [HttpPatch]
     [Route("users/{Id:int}/password")]
-    public async Task UpdateUserPassword(UpdatePasswordRequest request) => await userService.UpdatePassword(request);
+    [Authorize(Policy = PolicyName.Write)]
+    public async Task UpdateUserPassword(UpdatePasswordRequest request)
+    {
+        // TODO: Verify authenticated user is an admin or is the user specified in the request DTO.
+        await userService.UpdatePassword(request);
+    }
 }

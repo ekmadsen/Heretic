@@ -62,10 +62,10 @@ public class UserService(IOptions<IdentityOptions> options, IUserRepository repo
         // Get user's claims.
         var claims = new Dictionary<string, object>
         {
-            {"sub", userEntity.Username},
-            {"firstName", userEntity.FirstName},
-            {"lastName", userEntity.LastName},
-            {"email", userEntity.Email}
+            ["sub"] = userEntity.Username,
+            ["firstName"] = userEntity.FirstName,
+            ["lastName"] = userEntity.LastName,
+            ["email"] = userEntity.Email
         };
 
         var claimEntities = repository.GetClaims(userEntity.Id);
@@ -95,13 +95,15 @@ public class UserService(IOptions<IdentityOptions> options, IUserRepository repo
 
         // Create security key.
         var rsa = RSA.Create();
+        // The public key validates the signed token.
         var publicSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(options.Value.PublicSigningKey));
         rsa.ImportRSAPublicKey(publicSigningKey, out var bytesRead);
         if (bytesRead != publicSigningKey.Length) throw new Exception("Failed to import RSA public key.");
+        var securityKey = new RsaSecurityKey(rsa) { KeyId = options.Value.KeyId.ToString() };
+        // The private key signs the token.
         var privateSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(options.Value.PrivateSigningKey));
         rsa.ImportRSAPrivateKey(privateSigningKey, out bytesRead);
         if (bytesRead != privateSigningKey.Length) throw new Exception("Failed to import RSA private key.");
-        var securityKey = new RsaSecurityKey(rsa) { KeyId = options.Value.KeyId.ToString() };
 
         // Create token descriptor.
         var now = DateTime.UtcNow;
