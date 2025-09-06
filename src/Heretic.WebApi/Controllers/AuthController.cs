@@ -1,13 +1,9 @@
-﻿using System.Security.Cryptography;
-using ErikTheCoder.Contracts.Dtos;
+﻿using ErikTheCoder.Contracts.Dtos;
 using ErikTheCoder.Contracts.Dtos.Requests;
 using ErikTheCoder.Contracts.Internal;
 using ErikTheCoder.Contracts.Services;
-using ErikTheCoder.Identity.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 
 namespace ErikTheCoder.Heretic.WebApi.Controllers;
@@ -15,31 +11,12 @@ namespace ErikTheCoder.Heretic.WebApi.Controllers;
 
 [ApiController]
 [Route("auth")]
-public class AuthController(IOptions<IdentityOptions> options, IUserService userService)
+public class AuthController(IUserService userService)
 {
     [HttpGet]
     [Route("metadata")]
     [AllowAnonymous]
-    public async Task<AuthMetadata> GetMetadata()
-    {
-        // Export public signing key.
-        var rsa = RSA.Create();
-        var publicSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(options.Value.PublicSigningKey));
-        rsa.ImportRSAPublicKey(publicSigningKey, out var bytesRead);
-        if (bytesRead != publicSigningKey.Length) throw new Exception("Failed to import RSA public key.");
-        var securityKey = new RsaSecurityKey(rsa.ExportParameters(false)) { KeyId = options.Value.KeyId.ToString() };
-
-        return await Task.FromResult(new AuthMetadata
-        {
-            PublicSigningKey = new PublicSigningKey
-            {
-                Id = options.Value.KeyId,
-                AsPkcs1Base64 = Convert.ToBase64String(rsa.ExportRSAPublicKey()),
-                AsPem = rsa.ExportRSAPublicKeyPem(),
-                AsJsonWebKey = JsonWebKeyConverter.ConvertFromRSASecurityKey(securityKey)
-            }
-        });
-    }
+    public ActionResult<AuthMetadata> GetMetadata() => userService.GetAuthMetadata();
 
 
     [HttpPost]

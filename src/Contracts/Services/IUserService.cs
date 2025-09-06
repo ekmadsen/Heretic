@@ -8,6 +8,7 @@ namespace ErikTheCoder.Contracts.Services;
 
 public interface IUserService
 {
+    AuthMetadata GetAuthMetadata();
     IAsyncEnumerable<User> GetUsers();
     Task<User> GetUser(GetUserRequest request);
     Task<LoginResponse> Login(LoginRequest request);

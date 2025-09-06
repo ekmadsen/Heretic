@@ -21,6 +21,28 @@ public class UserService(IOptions<IdentityOptions> options, IUserRepository repo
     private const string _signatureAlgorithm = SecurityAlgorithms.RsaSha512Signature;
 
 
+    public AuthMetadata GetAuthMetadata()
+    {
+        // Export public signing key.
+        using var rsa = RSA.Create();
+        var publicSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(options.Value.PublicSigningKey));
+        rsa.ImportRSAPublicKey(publicSigningKey, out var bytesRead);
+        if (bytesRead != publicSigningKey.Length) throw new Exception("Failed to import RSA public key.");
+        var securityKey = new RsaSecurityKey(rsa.ExportParameters(false)) { KeyId = options.Value.KeyId.ToString() };
+
+        return new AuthMetadata
+        {
+            PublicSigningKey = new PublicSigningKey
+            {
+                Id = options.Value.KeyId,
+                AsPkcs1Base64 = Convert.ToBase64String(rsa.ExportRSAPublicKey()),
+                AsPem = rsa.ExportRSAPublicKeyPem(),
+                AsJsonWebKey = JsonWebKeyConverter.ConvertFromRSASecurityKey(securityKey)
+            }
+        };
+    }
+
+
     public IAsyncEnumerable<User> GetUsers()
     {
         var userEntities = repository.GetUsers();
@@ -94,16 +116,16 @@ public class UserService(IOptions<IdentityOptions> options, IUserRepository repo
         }
 
         // Create security key.
-        var rsa = RSA.Create();
+        using var rsa = RSA.Create();
         // The public key validates the signed token.
         var publicSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(options.Value.PublicSigningKey));
         rsa.ImportRSAPublicKey(publicSigningKey, out var bytesRead);
         if (bytesRead != publicSigningKey.Length) throw new Exception("Failed to import RSA public key.");
-        var securityKey = new RsaSecurityKey(rsa) { KeyId = options.Value.KeyId.ToString() };
         // The private key signs the token.
         var privateSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(options.Value.PrivateSigningKey));
         rsa.ImportRSAPrivateKey(privateSigningKey, out bytesRead);
         if (bytesRead != privateSigningKey.Length) throw new Exception("Failed to import RSA private key.");
+        var securityKey = new RsaSecurityKey(rsa) { KeyId = options.Value.KeyId.ToString() };
 
         // Create token descriptor.
         var now = DateTime.UtcNow;

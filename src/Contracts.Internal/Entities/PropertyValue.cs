@@ -10,7 +10,7 @@ public record PropertyValue
     public int? IntValue { get; set; }
     public long? LongValue { get; set; }
     public decimal? DecimalValue { get; set; }
-    public DateTimeOffset? DateTimeValue { get; set; }
+    public DateTime? DateTimeValue { get; set; }
     public string ShortTextValue { get; set; }
     public string LongTextValue { get; set; }
 }

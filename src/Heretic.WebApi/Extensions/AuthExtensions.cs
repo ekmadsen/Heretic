@@ -22,7 +22,8 @@ public static class AuthExtensions
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 // Create security key.
-                var rsa = RSA.Create();
+                var rsa = RSA.Create(); // Don't dispose via using pattern because reference to rsa variable is held by securityKey variable below.
+                // The public key validates the signed token.
                 var publicSigningKey = new ReadOnlySpan<byte>(Convert.FromBase64String(authOptions.PublicSigningKey));
                 rsa.ImportRSAPublicKey(publicSigningKey, out var bytesRead);
                 if (bytesRead != publicSigningKey.Length) throw new Exception("Failed to import RSA public key.");

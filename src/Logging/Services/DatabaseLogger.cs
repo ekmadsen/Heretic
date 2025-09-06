@@ -96,7 +96,7 @@ public class DatabaseLogger(IOptions<DatabaseLoggerOptions> options, IApplicatio
                     break;
 
                 case DateTimeOffset value:
-                    propertyValue.DateTimeValue = value.ToUniversalTime();
+                    propertyValue.DateTimeValue = value.UtcDateTime;
                     break;
 
                 case DateTime value:
